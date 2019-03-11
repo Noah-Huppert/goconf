@@ -26,13 +26,13 @@ specify value requirements for fields.
 ```go
 // Import
 import "github.com/Noah-Huppert/goconf"
-import goconftoml "github.com/Noah-Huppert/goconf-toml" // If using toml configuration files
+import "github.com/Noah-Huppert/goconf/toml" // If using toml configuration files
 
 // Create goconf instance
 loader := goconf.NewLoader()
 
 // Register file formats
-loader.RegisterFormat(".toml", goconftoml.TomlMapDecoder)
+loader.RegisterFormat(".toml", toml.TomlMapDecoder)
 
 // Define locations to search for configuration files
 // Can use shell globs
