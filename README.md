@@ -4,6 +4,7 @@ Simple go configuration library.
 # Table Of Contents
 - [Overview](#overview)
 - [Usage](#usage)
+- [Tests](#tests)
 
 # Overview
 Goconf is a simple, straightforward, go configuration library.  
@@ -53,3 +54,12 @@ Goconf provides an implementation for TOML files in the
 To use any other file format simply implement a `MapDecoder` and register
 it with Goconf via the
 `Loader.RegisterFormat(fileExt string, unmarshaler MapDecoder)` method.
+
+# Tests
+Run tests:
+
+```
+make test
+# Or
+make
+```
