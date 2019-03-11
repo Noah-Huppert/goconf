@@ -33,3 +33,14 @@ func TestRegisterFormat(t *testing.T) {
 	assert.Equal(t, ok, true, "empty string dummy map decoder not present")
 	assert.Equal(t, emptyDecoder.(DummyMapDecoder).ID, "")
 }
+
+// TestAddConfigPath ensures paths are added to the configPaths array
+func TestAddConfigPath(t *testing.T) {
+	loader := NewLoader()
+
+	loader.AddConfigPath("AAA")
+	loader.AddConfigPath("BBB")
+	loader.AddConfigPath("CCC")
+
+	assert.DeepEqual(t, loader.configPaths, []string{"AAA", "BBB", "CCC"})
+}
