@@ -26,15 +26,16 @@ func NewLoader() *Loader {
 	}
 }
 
-// RegisterFormat adds a MapDecoder to the formats field. The ext argument
-// should include the final dot and then the extension name. An empty string
-// can be passed to target files without an extension.
+// RegisterFormat registers a MapDecoder to be used for a file extension.
+// The ext argument should include the final dot and then the extension name.
+// An empty string can be passed to target files without an extension.
 func (l *Loader) RegisterFormat(ext string, decoder MapDecoder) {
 	l.formats[ext] = decoder
 }
 
-// AddConfigPath adds a path to the configPaths field. Argument can contain
-// shell globs. Must point to file(s) not of directories.
+// AddConfigPath adds a potential path from which configuration files will be
+// loaded. Must point to file(s) not of directories. The p argument can contain
+// shell globs.
 func (l *Loader) AddConfigPath(p string) {
 	// {{{1 Check if already in configPaths
 	for _, existingPath := range l.configPaths {
