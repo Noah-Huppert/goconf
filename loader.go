@@ -107,7 +107,7 @@ func (l Loader) Load(c interface{}) error {
 		}
 
 		// {{{3 Put map into struct
-		if err = mapstructure.Decode(loadMap, &c); err != nil {
+		if err = mapstructure.Decode(loadMap, c); err != nil {
 			return fmt.Errorf("error putting decoded map "+
 				"for \"%s\" into configuration struct: %s",
 				loadPath, err.Error())
