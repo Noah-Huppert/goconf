@@ -24,6 +24,7 @@ var testTomlValue map[string]interface{} = map[string]interface{}{
 	},
 }
 
+// TestDecode ensures TomlMapDecoder properly decodes Toml
 func TestDecode(t *testing.T) {
 	decoder := TomlMapDecoder{}
 	m := map[string]interface{}{}
