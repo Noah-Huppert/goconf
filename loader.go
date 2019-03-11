@@ -19,8 +19,8 @@ type Loader struct {
 }
 
 // NewLoader creates a Loader
-func NewLoader() {
-	return Loader{
+func NewLoader() *Loader {
+	return &Loader{
 		formats:     map[string]MapDecoder{},
 		configPaths: []string{},
 	}
@@ -37,7 +37,7 @@ func (l *Loader) RegisterFormat(ext string, decoder MapDecoder) {
 // shell globs. Must point to file(s) not of directories.
 func (l *Loader) AddConfigPath(p string) {
 	// {{{1 Check if already in configPaths
-	for existingPath := range l.configPaths {
+	for _, existingPath := range l.configPaths {
 		if existingPath == p {
 			return
 		}
@@ -52,7 +52,7 @@ func (l Loader) Load(c interface{}) error {
 	// {{{1 Expand config paths
 	loadPaths := []string{}
 
-	for configPath := range l.configPaths {
+	for _, configPath := range l.configPaths {
 		// {{{2 Interpret shell globs
 		expandedPaths, err := filepath.Glob(configPath)
 		if err != nil {
@@ -61,7 +61,7 @@ func (l Loader) Load(c interface{}) error {
 				err.Error())
 		}
 
-		for expandedPath := range expandedPath {
+		for _, expandedPath := range expandedPaths {
 			// {{{2 Check not directory
 			fi, err := os.Stat(expandedPath)
 			if err != nil {
@@ -82,7 +82,7 @@ func (l Loader) Load(c interface{}) error {
 	}
 
 	// {{{1 Try to load all files in loadPaths
-	for loadPath := range loadPaths {
+	for _, loadPath := range loadPaths {
 		// {{{2 Check if MapDecoder exists for file extension
 		decoder, ok := l.formats[filepath.Ext(loadPath)]
 
@@ -101,7 +101,7 @@ func (l Loader) Load(c interface{}) error {
 		// {{{3 Call MapDecoder
 		loadMap := map[string]interface{}{}
 
-		if err = decoder(loadFile, &loadMap); err != nil {
+		if err = decoder.Decode(loadFile, &loadMap); err != nil {
 			return fmt.Errorf("error decoding \"%s\": %s",
 				loadPath, err.Error())
 		}
@@ -115,7 +115,9 @@ func (l Loader) Load(c interface{}) error {
 	}
 
 	// {{{1 Validate configuration struct
-	if err = validate.Struct(c); err != nil {
+	validate := validator.New()
+
+	if err := validate.Struct(c); err != nil {
 		return fmt.Errorf("failed to validate configuration "+
 			"struct: %s", err.Error())
 	}
