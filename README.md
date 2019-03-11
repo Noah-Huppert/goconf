@@ -31,7 +31,7 @@ The [`MapDecoder`](https://godoc.org/github.com/Noah-Huppert/goconf#MapDecoder)
 interface allows Goconf to use any file format.  
 
 Goconf provides an implementation for TOML files in the 
-[`github.com/Noah-Huppert/goconf-toml`](https://godoc.org/github.com/Noah-Huppert/goconf/toml) package.
+[`github.com/Noah-Huppert/goconf/toml`](https://godoc.org/github.com/Noah-Huppert/goconf/toml) package.
 
 To use any other file format simply implement a [`MapDecoder`](https://godoc.org/github.com/Noah-Huppert/goconf#MapDecoder) 
 and register it with Goconf via the
