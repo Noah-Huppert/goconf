@@ -25,7 +25,7 @@ func (d DummyMapDecoder) Decode(r io.Reader, m *map[string]interface{}) error {
 // tempFilesTxt holds the contents of temporary files which will be created for
 // testing purposes. Keys are arbitrary IDs which are used to refer to these
 // temporary files in the future.
-var tempFilesTxt map[string][]byte = map[string][]byte{
+var tempFilesTxt = map[string][]byte{
 	"a": []byte("key1 = \"value1\""),
 	"b": []byte("key2 = \"value2\""),
 	"c": []byte("key3 = \"value3\""),
@@ -41,7 +41,7 @@ type configFile struct {
 
 // expectedConfigFile holds the values which Loader.Load should place in a
 // configFile struct when called
-var expectedConfigFile configFile = configFile{
+var expectedConfigFile = configFile{
 	Key1: "value1",
 	Key2: "value2",
 	Key3: "value3",
@@ -79,7 +79,7 @@ func cleanupTempFiles(t *testing.T, files map[string]*os.File) {
 			"file %s", name)
 	}
 
-	for name, _ := range files {
+	for name := range files {
 		path := fmt.Sprintf("/tmp/goconf-config-%s.toml", name)
 		assert.NilError(t, os.Remove(path), "failed to remove"+
 			"config file %s", name)
