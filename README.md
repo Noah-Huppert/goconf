@@ -17,7 +17,7 @@ Any file format can be used.
 Define configuration parameters in a struct.  
 
 Use [`mapstructure` tags](https://godoc.org/github.com/mitchellh/mapstructure#example-Decode--Tags)
-to specify the names of fields when being unmarshalled.  
+to specify the names of fields when being decoded.  
 
 Use [`validate` tags](https://godoc.org/gopkg.in/go-playground/validator.v9) to
 specify value requirements for fields.
@@ -32,7 +32,7 @@ import goconftoml "github.com/Noah-Huppert/goconf-toml" // If using toml configu
 loader := goconf.NewLoader()
 
 // Register file formats
-loader.RegisterFormat(".toml", goconftoml.TomlMapUnmarshaller)
+loader.RegisterFormat(".toml", goconftoml.TomlMapDecoder)
 
 // Define locations to search for configuration files
 // Can use shell globs
@@ -45,12 +45,11 @@ err := loader.Load(&config)
 ```
 
 ## Custom File Formats
-The `MapUnmarshaller` interface allows Goconf to use any file format.  
+The `MapDecoder` interface allows Goconf to use any file format.  
 
 Goconf provides an implementation for TOML files in the 
 `github.com/Noah-Huppert/goconf-toml` package.
 
-To use any other file format simply implement a `MapUnmarshaller` and register
+To use any other file format simply implement a `MapDecoder` and register
 it with Goconf via the
-`Loader.RegisterFormat(string fileExt, MapUnmarshaller unmarshaller)` method.
-
+`Loader.RegisterFormat(fileExt string, unmarshaler MapDecoder)` method.
