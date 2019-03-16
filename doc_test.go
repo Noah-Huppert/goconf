@@ -2,13 +2,11 @@ package goconf_test
 
 import (
 	"github.com/Noah-Huppert/goconf"
-	"github.com/Noah-Huppert/goconf/toml"
 )
 
 // Simple configuration setup using Toml files
 func Example_toml() {
 	// import "github.com/Noah-Huppert/goconf"
-	// import "github.com/Noah-Huppert/goconf/toml"
 
 	// Create goconf instance
 	loader := goconf.NewDefaultLoader()
@@ -20,7 +18,7 @@ func Example_toml() {
 
 	// Load values
 	type YourConfigStruct struct {
-		Foo string `mapstructure:"foo"`
+		Foo string `mapstructure:"foo" validate:"required"`
 		Bar string `mapstructure:"bar"`
 	}
 
