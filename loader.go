@@ -85,8 +85,8 @@ func (l Loader) Load(c interface{}) error {
 
 			if fi.IsDir() {
 				return fmt.Errorf("configuration path "+
-					"\"%s\" is directory, cannot be: %s",
-					expandedPath, err.Error())
+					"\"%s\" is a directory, cannot be",
+					expandedPath)
 			}
 
 			// {{{2 Not directory, add
