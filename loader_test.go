@@ -6,8 +6,6 @@ import (
 	"os"
 	"testing"
 
-	"github.com/Noah-Huppert/goconf/toml"
-
 	"gotest.tools/assert"
 )
 
@@ -120,10 +118,9 @@ func TestLoad(t *testing.T) {
 	defer cleanupTempFiles(t, tmpFiles)
 
 	// Setup loader
-	loader := NewLoader()
+	loader := NewDefaultLoader()
 
 	loader.AddConfigPath("/tmp/goconf-config-*.toml")
-	loader.RegisterFormat(".toml", toml.TomlMapDecoder{})
 
 	// Load
 	actualConfig := configFile{}
@@ -142,10 +139,9 @@ func TestLoadValidate(t *testing.T) {
 	defer cleanupTempFiles(t, tmpFiles)
 
 	// Setup loader
-	loader := NewLoader()
+	loader := NewDefaultLoader()
 
 	loader.AddConfigPath("/tmp/goconf-config-*.toml")
-	loader.RegisterFormat(".toml", toml.TomlMapDecoder{})
 
 	// Loader
 	actualConfig := configFile{}

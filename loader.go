@@ -5,6 +5,8 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/Noah-Huppert/goconf/toml"
+
 	"github.com/mitchellh/mapstructure"
 	"gopkg.in/go-playground/validator.v9"
 )
@@ -24,6 +26,16 @@ func NewLoader() *Loader {
 		formats:     map[string]MapDecoder{},
 		configPaths: []string{},
 	}
+}
+
+// NewDefaultLoader creates a loader with all MapDecoders implemented by
+// goconf registered with the appropriate file extensions.
+func NewDefaultLoader() *Loader {
+	l := NewLoader()
+
+	l.RegisterFormat(".toml", toml.TomlMapDecoder{})
+
+	return l
 }
 
 // RegisterFormat registers a MapDecoder to be used for a file extension.
