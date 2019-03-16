@@ -11,10 +11,7 @@ func Example_toml() {
 	// import "github.com/Noah-Huppert/goconf/toml"
 
 	// Create goconf instance
-	loader := goconf.NewLoader()
-
-	// Register file formats
-	loader.RegisterFormat(".toml", toml.TomlMapDecoder{})
+	loader := goconf.NewDefaultLoader()
 
 	// Define locations to search for configuration files
 	// Can use shell globs
