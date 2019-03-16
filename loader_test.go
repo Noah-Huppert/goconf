@@ -152,3 +152,18 @@ func TestLoadValidate(t *testing.T) {
 		"struct: Key: 'configFile.Key3' Error:Field validation for "+
 		"'Key3' failed on the 'required' tag")
 }
+
+// TestLoadDirCheck ensures Load errors if a config path is a directory
+func TestLoadDirCheck(t *testing.T) {
+	// Setup loader
+	loader := NewDefaultLoader()
+
+	loader.AddConfigPath(".")
+
+	cfg := configFile{}
+
+	err := loader.Load(&cfg)
+
+	assert.Equal(t, err.Error(), "configuration path \".\" is a directory"+
+		", cannot be")
+}
