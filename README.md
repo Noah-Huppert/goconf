@@ -14,6 +14,33 @@ Configuration is defined via structs and tags. Values are loaded from files.
 Any file format can be used. 
 
 # Usage
+## Example
+The following example loads TOML configuration files from `/etc/foo/` 
+and `/etc/foo.d/`. The configuration files are required to have a `foo` key but 
+the `bar` key is optional`.
+
+```go
+import "github.com/Noah-Huppert/goconf"
+
+// Create goconf instance
+loader := goconf.NewDefaultLoader()
+
+// Define locations to search for configuration files
+// Can use shell globs
+loader.AddConfigPath("/etc/foo/foo.*")
+loader.AddConfigPath("/etc/foo.d/*")
+
+// Load values
+type YourConfigStruct struct {
+    Foo string `mapstructure:"foo" validate:"required"`
+    Bar string `mapstructure:"bar"`
+}
+
+config := YourConfigStruct{}
+err := loader.Load(&config)
+panic(err)
+```
+
 ## Define Configuration
 Define configuration parameters in a struct.  
 
@@ -22,9 +49,6 @@ to specify the names of fields when being decoded.
 
 Use [`validate` tags](https://godoc.org/gopkg.in/go-playground/validator.v9) to
 specify value requirements for fields.
-
-## Example
-See the [Go Doc Toml example](https://godoc.org/github.com/Noah-Huppert/goconf#example-package--Toml).
 
 ## Custom File Formats
 The [`MapDecoder`](https://godoc.org/github.com/Noah-Huppert/goconf#MapDecoder)
