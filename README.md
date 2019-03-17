@@ -11,13 +11,14 @@ Goconf is a simple, straightforward, go configuration library.
 
 Configuration is defined via structs and tags. Values are loaded from files.  
 
-Any file format can be used. 
+Supports TOML by default. [Any file format can be used](#custom-file-formats).
 
 # Usage
 ## Example
-The following example loads TOML configuration files from `/etc/foo/` 
-and `/etc/foo.d/`. The configuration files are required to have a `foo` key but 
-the `bar` key is optional.
+The following example loads configuration files named `foo.toml` from the
+`/etc/foo/` directory and any `.toml` files from the `/etc/foo.d/` directory. 
+The configuration files are required to have a `foo` key but the `bar` key 
+is optional.
 
 ```go
 import "github.com/Noah-Huppert/goconf"
