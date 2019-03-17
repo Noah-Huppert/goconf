@@ -17,7 +17,7 @@ Any file format can be used.
 ## Example
 The following example loads TOML configuration files from `/etc/foo/` 
 and `/etc/foo.d/`. The configuration files are required to have a `foo` key but 
-the `bar` key is optional`.
+the `bar` key is optional.
 
 ```go
 import "github.com/Noah-Huppert/goconf"
