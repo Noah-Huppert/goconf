@@ -37,6 +37,14 @@ type configFile struct {
 	Key3 string `mapstructure:"key3" validate:"required"`
 }
 
+// defaultConfigFile is a dummy configuration file struct compatible with the
+// configFile struct, but with a default value specified for Key3
+type defaultConfigFile struct {
+	Key1 string `mapstructure:"key1" validate:"required"`
+	Key2 string `mapstructure:"key2" validate:"required" default:"key2default"`
+	Key3 string `mapstructure:"key3" validate:"required" default:"key3default"`
+}
+
 // expectedConfigFile holds the values which Loader.Load should place in a
 // configFile struct when called
 var expectedConfigFile = configFile{
@@ -86,11 +94,13 @@ func cleanupTempFiles(t *testing.T, files map[string]*os.File) {
 
 // TestRegisterFormat ensures MapDecoders are properly added to the formats map
 func TestRegisterFormat(t *testing.T) {
+	// Setup loader
 	loader := NewLoader()
 
 	loader.RegisterFormat(".foo", DummyMapDecoder{ID: ".foo"})
 	loader.RegisterFormat("", DummyMapDecoder{ID: ""})
 
+	// Assert
 	fooDecoder, ok := loader.formats[".foo"]
 	assert.Equal(t, ok, true, ".foo dummy map decoder not present")
 	assert.Equal(t, fooDecoder.(DummyMapDecoder).ID, ".foo")
@@ -102,12 +112,14 @@ func TestRegisterFormat(t *testing.T) {
 
 // TestAddConfigPath ensures paths are added to the configPaths array
 func TestAddConfigPath(t *testing.T) {
+	// Setup loader
 	loader := NewLoader()
 
 	loader.AddConfigPath("AAA")
 	loader.AddConfigPath("BBB")
 	loader.AddConfigPath("CCC")
 
+	// Assert
 	assert.DeepEqual(t, loader.configPaths, []string{"AAA", "BBB", "CCC"})
 }
 
@@ -127,6 +139,7 @@ func TestLoad(t *testing.T) {
 
 	err := loader.Load(&actualConfig)
 
+	// Assert
 	assert.NilError(t, err, "failed to load configuration")
 
 	assert.DeepEqual(t, actualConfig, expectedConfigFile)
@@ -143,11 +156,12 @@ func TestLoadValidate(t *testing.T) {
 
 	loader.AddConfigPath("/tmp/goconf-config-*.toml")
 
-	// Loader
+	// Load
 	actualConfig := configFile{}
 
 	err := loader.Load(&actualConfig)
 
+	// Assert
 	assert.Equal(t, err.Error(), "failed to validate configuration "+
 		"struct: Key: 'configFile.Key3' Error:Field validation for "+
 		"'Key3' failed on the 'required' tag")
@@ -160,10 +174,39 @@ func TestLoadDirCheck(t *testing.T) {
 
 	loader.AddConfigPath(".")
 
+	// Load
 	cfg := configFile{}
 
 	err := loader.Load(&cfg)
 
 	assert.Equal(t, err.Error(), "configuration path \".\" is a directory"+
 		", cannot be")
+}
+
+// TestLoadDefaults ensures Load sets default values in a struct
+func TestLoadDefaults(t *testing.T) {
+	// Place temp files
+	tmpFiles := placeTempFiles(t, []string{"a", "b"})
+	defer cleanupTempFiles(t, tmpFiles)
+
+	// Setup loader
+	loader := NewDefaultLoader()
+
+	loader.AddConfigPath("/tmp/goconf-config-*.toml")
+
+	// Load
+	cfg := defaultConfigFile{}
+
+	err := loader.Load(&cfg)
+
+	// Assert
+	assert.NilError(t, err)
+
+	expectedCfg := defaultConfigFile{
+		Key1: expectedConfigFile.Key1,
+		Key2: expectedConfigFile.Key2,
+		Key3: "key3default",
+	}
+
+	assert.DeepEqual(t, cfg, expectedCfg)
 }

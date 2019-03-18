@@ -17,8 +17,8 @@ Supports TOML by default. [Any file format can be used](#custom-file-formats).
 ## Example
 The following example loads configuration files named `foo.toml` from the
 `/etc/foo/` directory and any `.toml` files from the `/etc/foo.d/` directory. 
-The configuration files are required to have a `foo` key but the `bar` key 
-is optional.
+The configuration files are required to have a `foo` key. The `bar` key 
+is optional and will have a default value of `bardefault` if not provided.
 
 ```go
 import "github.com/Noah-Huppert/goconf"
@@ -34,7 +34,7 @@ loader.AddConfigPath("/etc/foo.d/*")
 // Load values
 type YourConfigStruct struct {
     Foo string `mapstructure:"foo" validate:"required"`
-    Bar string `mapstructure:"bar"`
+    Bar string `mapstructure:"bar" default:"bardefault"`
 }
 
 config := YourConfigStruct{}
@@ -49,7 +49,10 @@ Use [`mapstructure` tags](https://godoc.org/github.com/mitchellh/mapstructure#ex
 to specify the names of fields when being decoded.  
 
 Use [`validate` tags](https://godoc.org/gopkg.in/go-playground/validator.v9) to
-specify value requirements for fields.
+specify value requirements for fields.  
+
+Use [`default` tags](https://github.com/mcuadros/go-defaults) to specify 
+default field values.
 
 ## Custom File Formats
 The [`MapDecoder`](https://godoc.org/github.com/Noah-Huppert/goconf#MapDecoder)

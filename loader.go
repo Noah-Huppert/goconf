@@ -9,6 +9,7 @@ import (
 
 	"github.com/mitchellh/mapstructure"
 	"gopkg.in/go-playground/validator.v9"
+	"gopkg.in/mcuadros/go-defaults.v1"
 )
 
 // Loader loads configuration
@@ -126,6 +127,9 @@ func (l Loader) Load(c interface{}) error {
 				loadPath, err.Error())
 		}
 	}
+
+	// {{{1 Set default values
+	defaults.SetDefaults(c)
 
 	// {{{1 Validate configuration struct
 	validate := validator.New()
