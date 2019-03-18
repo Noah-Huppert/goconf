@@ -24,9 +24,10 @@ func (d DummyMapDecoder) Decode(r io.Reader, m *map[string]interface{}) error {
 // testing purposes. Keys are arbitrary IDs which are used to refer to these
 // temporary files in the future.
 var tempFilesTxt = map[string][]byte{
-	"a": []byte("key1 = \"value1\""),
-	"b": []byte("key2 = \"value2\""),
-	"c": []byte("key3 = \"value3\""),
+	"a":          []byte("key1 = \"value1\""),
+	"b":          []byte("key2 = \"value2\""),
+	"c":          []byte("key3 = \"value3\""),
+	"bool-false": []byte("foo = false"),
 }
 
 // configFile is a dummy configuration file struct definition passed to
@@ -43,6 +44,12 @@ type defaultConfigFile struct {
 	Key1 string `mapstructure:"key1" validate:"required"`
 	Key2 string `mapstructure:"key2" validate:"required" default:"key2default"`
 	Key3 string `mapstructure:"key3" validate:"required" default:"key3default"`
+}
+
+// boolConfigFile is a dummy configuration file struct definition with a bool
+// field. Used with the bool-false tempFilesTxt.
+type boolConfigFile struct {
+	Foo bool `mapstructure:"foo" default:"true"`
 }
 
 // expectedConfigFile holds the values which Loader.Load should place in a
@@ -206,6 +213,54 @@ func TestLoadDefaults(t *testing.T) {
 		Key1: expectedConfigFile.Key1,
 		Key2: expectedConfigFile.Key2,
 		Key3: "key3default",
+	}
+
+	assert.DeepEqual(t, cfg, expectedCfg)
+}
+
+// TestLoadFalseBoolDefault ensures defaults for bool fields are set correctly
+func TestLoadFalseBoolDefault(t *testing.T) {
+	// Place temp files
+	tmpFiles := placeTempFiles(t, []string{"bool-false"})
+	defer cleanupTempFiles(t, tmpFiles)
+
+	// Setup loader
+	loader := NewDefaultLoader()
+
+	loader.AddConfigPath("/tmp/goconf-config-*.toml")
+
+	// Load
+	cfg := boolConfigFile{}
+
+	err := loader.Load(&cfg)
+
+	// Assert
+	assert.NilError(t, err)
+
+	expectedCfg := boolConfigFile{
+		Foo: false,
+	}
+
+	assert.DeepEqual(t, cfg, expectedCfg)
+}
+
+// TestLoadTrueBoolDefault ensures defaults for bool fields are set correctly
+func TestLoadTrueBoolDefault(t *testing.T) {
+	// Setup loader
+	loader := NewDefaultLoader()
+
+	loader.AddConfigPath("/tmp/goconf-config-*.toml")
+
+	// Load
+	cfg := boolConfigFile{}
+
+	err := loader.Load(&cfg)
+
+	// Assert
+	assert.NilError(t, err)
+
+	expectedCfg := boolConfigFile{
+		Foo: true,
 	}
 
 	assert.DeepEqual(t, cfg, expectedCfg)
