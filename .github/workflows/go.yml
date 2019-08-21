@@ -19,5 +19,5 @@ jobs:
     - name: Get dependencies
       run: go mod download
 
-    - name: Build
+    - name: Test
       run: make test
