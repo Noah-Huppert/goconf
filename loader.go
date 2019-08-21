@@ -16,7 +16,7 @@ import (
 type Loader struct {
 	// validate is the validator instance to use for validation
 	validate *validator.Validate
-	
+
 	// formats holds the MapDecoders for file extensions
 	formats map[string]MapDecoder
 
@@ -27,7 +27,7 @@ type Loader struct {
 // NewLoader creates a Loader
 func NewLoader() *Loader {
 	return &Loader{
-		validate: validator.New(),
+		validate:    validator.New(),
 		formats:     map[string]MapDecoder{},
 		configPaths: []string{},
 	}
@@ -72,6 +72,9 @@ func (l *Loader) AddConfigPath(p string) {
 
 // Load configuration files into a struct
 func (l Loader) Load(c interface{}) error {
+	// {{{1 Set default values
+	defaults.SetDefaults(c)
+
 	// {{{1 Expand config paths
 	loadPaths := []string{}
 
@@ -136,9 +139,6 @@ func (l Loader) Load(c interface{}) error {
 				loadPath, err.Error())
 		}
 	}
-
-	// {{{1 Set default values
-	defaults.SetDefaults(c)
 
 	// {{{1 Validate configuration struct
 	if err := l.validate.Struct(c); err != nil {
