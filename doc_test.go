@@ -9,7 +9,7 @@ func Example_toml() {
 	// import "github.com/Noah-Huppert/goconf"
 
 	// Create goconf instance
-	loader := goconf.NewDefaultLoader()
+	loader := goconf.NewLoader()
 
 	// Define locations to search for configuration files
 	// Can use shell globs
