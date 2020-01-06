@@ -58,27 +58,27 @@ func (l Loader) GetValidate() *validator.Validate {
 // loaded. Must point to file(s) not of directories. The p argument can contain
 // shell globs.
 func (l *Loader) AddConfigPath(p string) {
-	// {{{1 Check if already in configPaths
+	// Check if already in configPaths
 	for _, existingPath := range l.configPaths {
 		if existingPath == p {
 			return
 		}
 	}
 
-	// {{{1 Add
+	// Add
 	l.configPaths = append(l.configPaths, p)
 }
 
 // Load configuration files into a struct
 func (l Loader) Load(c interface{}) error {
-	// {{{1 Set default values
+	// Set default values
 	defaults.SetDefaults(c)
 
-	// {{{1 Expand config paths
+	// Expand config paths
 	loadPaths := []string{}
 
 	for _, configPath := range l.configPaths {
-		// {{{2 Interpret shell globs
+		// Interpret shell globs
 		expandedPaths, err := filepath.Glob(configPath)
 		if err != nil {
 			return fmt.Errorf("failed to expand configuration "+
@@ -87,7 +87,7 @@ func (l Loader) Load(c interface{}) error {
 		}
 
 		for _, expandedPath := range expandedPaths {
-			// {{{2 Check not directory
+			// Check not directory
 			fi, err := os.Stat(expandedPath)
 			if err != nil {
 				return fmt.Errorf("failed to stat "+
@@ -101,29 +101,29 @@ func (l Loader) Load(c interface{}) error {
 					expandedPath)
 			}
 
-			// {{{2 Not directory, add
+			// Not directory, add
 			loadPaths = append(loadPaths, expandedPath)
 		}
 	}
 
-	// {{{1 Try to load all files in loadPaths
+	// Try to load all files in loadPaths
 	for _, loadPath := range loadPaths {
-		// {{{2 Check if MapDecoder exists for file extension
+		// Check if MapDecoder exists for file extension
 		decoder, ok := l.formats[filepath.Ext(loadPath)]
 
 		if !ok {
 			continue
 		}
 
-		// {{{2 Use MapDecoder if exists
-		// {{{3 Open file
+		// Use MapDecoder if exists
+		// Open file
 		loadFile, err := os.Open(loadPath)
 		if err != nil {
 			return fmt.Errorf("error opening configuration "+
 				"file \"%s\": %s", loadPath, err.Error())
 		}
 
-		// {{{3 Call MapDecoder
+		// Call MapDecoder
 		loadMap := map[string]interface{}{}
 
 		if err = decoder.Decode(loadFile, &loadMap); err != nil {
@@ -131,7 +131,7 @@ func (l Loader) Load(c interface{}) error {
 				loadPath, err.Error())
 		}
 
-		// {{{3 Put map into struct
+		// Put map into struct
 		if err = mapstructure.Decode(loadMap, c); err != nil {
 			return fmt.Errorf("error putting decoded map "+
 				"for \"%s\" into configuration struct: %s",
@@ -139,7 +139,7 @@ func (l Loader) Load(c interface{}) error {
 		}
 	}
 
-	// {{{1 Validate configuration struct
+	// Validate configuration struct
 	if err := l.validate.Struct(c); err != nil {
 		return fmt.Errorf("failed to validate configuration "+
 			"struct: %s", err.Error())
