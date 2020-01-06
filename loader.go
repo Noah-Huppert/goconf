@@ -24,23 +24,22 @@ type Loader struct {
 	configPaths []string
 }
 
-// NewLoader creates a Loader
+// NewLoader creates a Loader with all MapDecoders implemented by goconf.
 func NewLoader() *Loader {
-	return &Loader{
+	l := &Loader{
 		validate:    validator.New(),
 		formats:     map[string]MapDecoder{},
 		configPaths: []string{},
 	}
-}
-
-// NewDefaultLoader creates a loader with all MapDecoders implemented by
-// goconf registered with the appropriate file extensions.
-func NewDefaultLoader() *Loader {
-	l := NewLoader()
 
 	l.RegisterFormat(".toml", toml.TomlMapDecoder{})
 
 	return l
+}
+
+// NewDefaultLoader creates a Loader with all MapDecoders implemented by goconf.
+func NewDefaultLoader() *Loader {
+	return NewLoader()
 }
 
 // RegisterFormat registers a MapDecoder to be used for a file extension.
